@@ -1,0 +1,95 @@
+body{
+	font-size:18px;
+	color: #555;
+}
+
+header:after,
+section:after,
+footer:after {
+    display: block;   clear: both;   content: "";
+}
+
+.clearfix:after{
+    display: block;
+    clear: both;
+    content: "";
+}
+
+a:link, a:visited{
+	color: #666;
+	text-decoration: none;
+}
+
+div,article,header,section,footer{
+}
+
+*{
+	box-sizing : border-box;
+}
+
+article,section{
+	clear: both;
+	box-sizing : border-box;
+}
+
+.inner{
+	max-width: 1000px;
+	margin: 10px auto;
+}
+
+h2{
+	font-size:40px;
+	text-transform: uppercase;
+	
+}
+
+/* header */
+header {
+	/* padding: 10px; */
+    
+    
+	background-image: url('../images/banner-bg.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+header .top{
+	clear:both;
+	width: 100%;
+	height: 100px;
+}
+
+header .top > * {
+    float: left;
+}
+
+header .top nav{
+	float: right;
+}
+
+header .top nav li{
+    list-style-type: none;
+	
+    float: left;
+    display: block;
+    margin: 15px;
+}
+
+header .top nav li a:link,header .top nav li a:visited{
+    font-size: 20px;
+    color: #fff
+;
+    text-transform: uppercase;
+}
+
+.intro {
+    float: left;
+    clear: left;
+}
+
+.screenshot {
+    float: right;
+    /* height: 300px; */
+    /* width: 300px; */
+}
+
