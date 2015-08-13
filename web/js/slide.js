@@ -8,7 +8,7 @@
 		touch : true,
 		interval : 4000,
 		duration : 500,
-		context : true,
+		context : false,
 		loop : true,
 		contextRate : 0.25
 		// onMoved : function(n){},
@@ -34,6 +34,7 @@
 		this.$LI_ARR = this.$element.find('li');
 		this.LENGTH = this.$LI_ARR.length;
 		this.$UL = this.$element;
+		this.$BACKUP = this.$UL.clone();
 		this.$parent = this.$element.parent();
 		this.width = this.$UL.width();
 		
@@ -58,7 +59,8 @@
 			toPrev : this.moveBackward.bind(this, options.loop),
 			jumpTo : this.moveTo.bind(this),
 			startSlide : this.start.bind(this, options.interval, options.loop),
-			stopSlide : this.stop.bind(this)
+			stopSlide : this.stop.bind(this),
+			destroy : this.destroy.bind(this)
 		};
 
 		/* dom */
@@ -206,6 +208,11 @@
 		// }
 	};
 
+	Slider.prototype.destroy = function destroy(){
+		this.$viewpoint.remove();
+		this.$BACKUP.appendTo(this.$parent);
+	}
+
 	Slider.prototype.setContainerLeft = function setContainerLeft(v, isAnimate, durition, cb){
         this.$slideContainer.animate({left : (v !== undefined ? v : -this.getCurrentLiLeft()) },isAnimate ? (durition ? durition : this.DURATION) : 0, cb);
 	};
@@ -262,7 +269,6 @@
 			}else if(direction === 'V'){
 				return hDiff = vDiff =0;
 			}else{
-				console.log(direction);
 				direction = Math.abs(hDiff) >= Math.abs(vDiff) ? 'H' : 'V';
 			}
             if( ( self.LENGTH == 2 || !isLoop ) && ( self.current === 0 && hDiff > 0 || self.current === self.LENGTH - 1 && hDiff < 0 ))
@@ -289,12 +295,16 @@
 		});
 	};
 	$.fn[bamSlider] = function ( options ) {
-		var slide = new Slider( this, options );
-		this.each( function (){
-			if ( !$.data( this, 'plugin_' + bamSlider ) ){
+		var sliders = this.map( function (){
+			var slide = $.data( this, 'plugin_' + bamSlider );
+			if ( !slide ){
+				slide = new Slider( this, options );
 				$.data( this, 'plugin_' + bamSlider, slide );
 			}
+			return slide.api;
 		});
-		return slide.api;
+		if(sliders.length > 1)
+			return sliders;
+		return sliders[0];
 	}
 })( jQuery, window, document );

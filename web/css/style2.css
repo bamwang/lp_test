@@ -292,7 +292,6 @@ header .screenshot .container .frame{
 	list-style-type: none;
 	float: left;
 	width: 30%;
-	min-width: 200px;
 	margin: 1%;
 	display: block;
 }
@@ -321,7 +320,6 @@ header .screenshot .container .frame{
 	background-color: #D9DCE1;
 	background-repeat: no-repeat;
 	background-size: cover;
-	min-height: 950px;
 }
 
 #info .left{
