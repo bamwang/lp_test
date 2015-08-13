@@ -13,8 +13,8 @@ $(function(){
     var $ankor, lowerBounder, upperBounder;// size sensitive
 
 
-    $('#comment_container').slide({loop : false});
-    $('#detail_container').slide();
+    ttt=$('#comment_container').bamSlider({loop : false});
+    $('#detail_container').bamSlider();
 
     updateOffset()
     $(window).on('resize', updateOffset);
