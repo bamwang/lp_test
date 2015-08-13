@@ -10,15 +10,20 @@ $(function(){
     var isShown = false;
 
     var origTop = parseInt($headerScreenShot.css('top'));
-    var $ankor,offset;// size sensitive
+    var $ankor, lowerBounder, upperBounder;// size sensitive
+
+
+    $('#comment_container').slide({loop : false});
+    $('#detail_container').slide();
+
     updateOffset()
     $(window).on('resize', updateOffset);
     $(window).on('scroll', function(){
         var scrollTop = window.scrollY;
         if(util.isCompleteShown($ankor) || util.isOverflowUp($ankor))
-            $headerScreenShot.css({"top": offset});
+            $headerScreenShot.css({"top": lowerBounder});
         else
-            $headerScreenShot.css("top" , origTop + scrollTop * (util.isLT640() ? 0.3 : 0.3));
+            $headerScreenShot.css("top" , upperBounder + scrollTop * (util.isLT768() ? 0.3 : 0.3));
 
         if(util.isShown($headerBg))
             $headerBg.css("background-position-y", scrollTop * 0.1);
@@ -33,14 +38,19 @@ $(function(){
             $('body').animate({ scrollTop: $dest.position().top });
         }
     })
-    $('#comment_container').slide();
 
     function updateOffset(){
-        $ankor = util.isLT640() ? $infoLeft : $infoLeftHeader;
-        offset = util.isLT640() ? 
-            util.getBottom($ankor.css('margin-bottom', $headerScreenShot.height())) - util.getBottom($ankorTop) 
-            : util.getTop($ankor) - 20;
-        window.scrollBy(0,-1);
+        if(util.isLT768()){
+            $ankor = $infoLeft;
+            upperBounder = 0;
+            lowerBounder = util.getBottom($ankor.css('margin-bottom', $headerScreenShot.height())) - util.getBottom($ankorTop);
+        }else{
+            $ankor = $infoLeftHeader;
+            upperBounder = 100;
+            lowerBounder = util.getTop($ankor) - 20;
+            $infoLeft.css('margin-bottom','');
+        }
+        window.scrollBy(0, -1);
     }
 });
 var util = (function(){
@@ -70,10 +80,10 @@ var util = (function(){
             isCompleteShown : function isCompleteShown($element){
                 return !util.isOverflowUp($element) && !util.isOverflowDown($element); 
             },
-            isLT640 : function isLT640(){
-                return $(window).width() <= 640;
+            isLT768 : function isLT768(){
+                return $(window).width() <= 768;
             },
-            isLT320 : function isLT640(){
+            isLT320 : function isLT768(){
                 return $(window).width() <= 320;
             }
         };
