@@ -12,10 +12,10 @@ $(function(){
     var origTop = parseInt($headerScreenShot.css('top'));
     var $ankor, lowerBounder, upperBounder;// size sensitive
     
-    var float = $('<p id="float">').css({'position': 'fixed','width': 20,'height': 20,'left':0,top:0,'z-index':1000000}).appendTo('body');
+    // var float = $('<p id="float">').css({'position': 'fixed','width': 20,'height': 20,'left':0,top:0,'z-index':1000000}).appendTo('body');
 
     var ua = (new UAParser()).getResult();
-    float.text(ua.engine.name + ua.os.name)
+    // float.text(ua.engine.name + ua.os.name)
     $('#comment_container').bamSlider();
 
     updateOffset()
