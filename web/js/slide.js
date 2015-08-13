@@ -229,7 +229,8 @@
 		var startLeft;
 		var vDiff;
 		var hDiff
-		var THRESHOLD = 0.2;
+		var THRESHOLD = 0.1;
+		var SPEED_RATE = 0.5;
 		var BUFFER = this.width * 0.5;
         var self = this;
         var isFirst = true;
@@ -244,12 +245,14 @@
 		});
         this.$slideContainer.on('touchmove',function(e){
 			if(self.isMoving)
+
 				return;
 			hDiff = e.originalEvent.touches[0].pageX - startPos.pageX;
 			vDiff = e.originalEvent.touches[0].pageY - startPos.pageY;
 			if(isFirst){
-				direction = hDiff > vDiff ? 'H' : 'V';
+				direction = Math.abs(hDiff) > Math.abs(vDiff) ? 'H' : 'V';
 				isFirst = false;
+				return;
 			}else{
 				if(direction === 'H'){
 					e.preventDefault();
@@ -257,16 +260,15 @@
 					return hDiff = vDiff =0;
 				}
 			}
-
             if( ( self.LENGTH == 2 || !isLoop ) && ( self.current === 0 && hDiff > 0 || self.current === self.LENGTH - 1 && hDiff < 0 ))
 				if(( self.current === 0 && hDiff > BUFFER || self.current === self.LENGTH - 1 && hDiff < -BUFFER) )
 					return hDiff = 0;
 				else{
-                    self.setContainerLeft(-startLeft+hDiff);
+                    self.setContainerLeft(-startLeft+hDiff*SPEED_RATE);
 					hDiff = 0;
 				}
 			else
-				self.setContainerLeft(-startLeft+hDiff);
+				self.setContainerLeft(-startLeft+hDiff*SPEED_RATE);
 		});
         this.$slideContainer.on('touchend', function(){
             self.isTouching = false;
