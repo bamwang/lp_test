@@ -227,42 +227,57 @@
 		}
 		var startPos;
 		var startLeft;
-		var diff;
+		var vDiff;
+		var hDiff
 		var THRESHOLD = 0.2;
 		var BUFFER = this.width * 0.5;
         var self = this;
+        var isFirst = true;
+        var direction;
         this.$slideContainer.on('touchstart',function(e){
 			if( self.LENGTH == 2 ){
                 self.setElementSequence(0 , 1);
 			}
             self.isTouching = true;
-			startPos = e.originalEvent.touches[0].pageX;
+			startPos = e.originalEvent.touches[0];
 			startLeft = self.getCurrentLiLeft();
 		});
         this.$slideContainer.on('touchmove',function(e){
-        	e.preventDefault();
 			if(self.isMoving)
 				return;
-			diff = e.originalEvent.touches[0].pageX - startPos;
-            if( ( self.LENGTH == 2 || !isLoop ) && ( self.current === 0 && diff > 0 || self.current === self.LENGTH - 1 && diff < 0 ))
-				if(( self.current === 0 && diff > BUFFER || self.current === self.LENGTH - 1 && diff < -BUFFER) )
-					return diff = 0;
+			hDiff = e.originalEvent.touches[0].pageX - startPos.pageX;
+			vDiff = e.originalEvent.touches[0].pageY - startPos.pageY;
+			if(isFirst){
+				direction = hDiff > vDiff ? 'H' : 'V';
+				isFirst = false;
+			}else{
+				if(direction === 'H'){
+					e.preventDefault();
+				}else{
+					return hDiff = vDiff =0;
+				}
+			}
+
+            if( ( self.LENGTH == 2 || !isLoop ) && ( self.current === 0 && hDiff > 0 || self.current === self.LENGTH - 1 && hDiff < 0 ))
+				if(( self.current === 0 && hDiff > BUFFER || self.current === self.LENGTH - 1 && hDiff < -BUFFER) )
+					return hDiff = 0;
 				else{
-                    self.setContainerLeft(-startLeft+diff);
-					diff = 0;
+                    self.setContainerLeft(-startLeft+hDiff);
+					hDiff = 0;
 				}
 			else
-				self.setContainerLeft(-startLeft+diff);
+				self.setContainerLeft(-startLeft+hDiff);
 		});
         this.$slideContainer.on('touchend', function(){
             self.isTouching = false;
-			if( diff < -THRESHOLD*self.width ){
+			if( hDiff < -THRESHOLD*self.width ){
                 self.moveForward(isLoop)
-			}else if( diff > THRESHOLD*self.width ){
+			}else if( hDiff > THRESHOLD*self.width ){
                 self.moveBackward(isLoop)
 			}else
                 self.setContainerLeft(undefined, true);
-			diff = 0;
+			hDiff = 0;
+			isFirst = true;
 		});
 	};
 	$.fn[bamSlider] = function ( options ) {
