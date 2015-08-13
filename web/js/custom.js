@@ -13,12 +13,12 @@ $(function(){
     var $ankor, lowerBounder, upperBounder;// size sensitive
 
 
-    ttt=$('#comment_container').bamSlider({loop : false});
+    ttt=$('#comment_container').bamSlider();
     $('#detail_container').bamSlider();
 
     updateOffset()
     $(window).on('resize', updateOffset);
-    $(window).on('scroll', function(){
+    $(document).on('scroll', function(){
         var scrollTop = window.scrollY;
         if(util.isCompleteShown($ankor) || util.isOverflowUp($ankor))
             $headerScreenShot.css({"top": lowerBounder});
@@ -69,10 +69,10 @@ var util = (function(){
                 return $(window).scrollTop() + $(window).height();
             },
             isOverflowUp : function isOverflowUp($element){
-                return util.getTop($element) < util.getScrollTop(); 
+                return util.getBottom($element) < util.getScrollTop(); 
             },
             isOverflowDown : function isOverflowDown($element){
-                return util.getBottom($element) > util.getScrollBottom(); 
+                return util.getTop($element) > util.getScrollBottom(); 
             },
             isShown : function isShown($element){
                 return !util.isOverflowUp($element) || !util.isOverflowDown($element); 

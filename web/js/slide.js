@@ -212,7 +212,7 @@
 
 	Slider.prototype.setViewPointHeightToFit = function setViewPointHeightToFit(n, isAnimate, durition){
 
-        this.$viewpoint.animate({height : $(this.$LI_ARR[n]).height()+50}, isAnimate ? (durition ? durition : this.DURATION) : 0);
+        this.$viewpoint.animate({height : $(this.$LI_ARR[n]).height()+50}, isAnimate ? (durition ? durition : this.DURATION/2) : 0);
 
 	};
 
@@ -233,42 +233,48 @@
 		var SPEED_RATE = 0.5;
 		var BUFFER = this.width * 0.5;
         var self = this;
-        var isFirst = true;
-        var direction;
+        var direction = 'N';
+
+        // var float = $('<p id="float">').css({'position': 'fixed','width': 20,'height': 20,'left':0,top:0,'z-index':1000000}).appendTo('body');
         this.$slideContainer.on('touchstart',function(e){
+     		self.$arrowNext.hide();
+     		self.$arrowPrev.hide();
 			if( self.LENGTH == 2 ){
                 self.setElementSequence(0 , 1);
 			}
             self.isTouching = true;
-			startPos = e.originalEvent.touches[0];
+			startPos = {
+				pageX : e.originalEvent.touches[0].pageX,
+				pageY : e.originalEvent.touches[0].pageY
+			};
+
 			startLeft = self.getCurrentLiLeft();
 		});
         this.$slideContainer.on('touchmove',function(e){
 			if(self.isMoving)
-
 				return;
+			// float.text(e.originalEvent.touches[0].pageX);
+
 			hDiff = e.originalEvent.touches[0].pageX - startPos.pageX;
 			vDiff = e.originalEvent.touches[0].pageY - startPos.pageY;
-			if(isFirst){
-				direction = Math.abs(hDiff) > Math.abs(vDiff) ? 'H' : 'V';
-				isFirst = false;
-				return;
+			if(direction === 'H'){
+				e.preventDefault();
+			}else if(direction === 'V'){
+				return hDiff = vDiff =0;
 			}else{
-				if(direction === 'H'){
-					e.preventDefault();
-				}else{
-					return hDiff = vDiff =0;
-				}
+				console.log(direction);
+				direction = Math.abs(hDiff) >= Math.abs(vDiff) ? 'H' : 'V';
 			}
             if( ( self.LENGTH == 2 || !isLoop ) && ( self.current === 0 && hDiff > 0 || self.current === self.LENGTH - 1 && hDiff < 0 ))
-				if(( self.current === 0 && hDiff > BUFFER || self.current === self.LENGTH - 1 && hDiff < -BUFFER) )
+				if(( self.current === 0 && hDiff > BUFFER || self.current === self.LENGTH - 1 && hDiff < -BUFFER) ){
 					return hDiff = 0;
-				else{
+				}else{
                     self.setContainerLeft(-startLeft+hDiff*SPEED_RATE);
 					hDiff = 0;
 				}
-			else
+			else{
 				self.setContainerLeft(-startLeft+hDiff*SPEED_RATE);
+			}
 		});
         this.$slideContainer.on('touchend', function(){
             self.isTouching = false;
@@ -279,7 +285,7 @@
 			}else
                 self.setContainerLeft(undefined, true);
 			hDiff = 0;
-			isFirst = true;
+			direction = 'N';
 		});
 	};
 	$.fn[bamSlider] = function ( options ) {
