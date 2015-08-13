@@ -240,6 +240,7 @@
 			startLeft = self.getCurrentLiLeft();
 		});
         this.$slideContainer.on('touchmove',function(e){
+        	e.preventDefault();
 			if(self.isMoving)
 				return;
 			diff = e.originalEvent.touches[0].pageX - startPos;
