@@ -1,4 +1,4 @@
-$(function(){
+$(window).load(function(){
     var $header = $("header");
     var $headerScreenShot = $("header .screenshot");
     var $infoSection = $("section#info");
