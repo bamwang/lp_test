@@ -1,13 +1,13 @@
 ;( function( $, window, document, undefined ){
 	var bamSlider = 'bamSlider';
 	var defaultOptions = {
-		auto : true,
+		auto : false,
 		indicator : true,
 		arrow : true,
 		//thumbnail : false,
 		touch : true,
 		interval : 4000,
-		duration : 500,
+		duration : 300,
 		context : false,
 		loop : true,
 		contextRate : 0.25
@@ -96,7 +96,7 @@
             this.start(options.interval, options.loop);
 		/* touch */
 		if(options.touch)
-            this.bindTouchEvent(options.loop);
+            this.bindTouchEvent(options.auto ? options.interval : undefined, options.loop);
 
         this.moveTo(this.current, null, options.loop);
 	};
@@ -196,7 +196,7 @@
         this.setViewPointHeightToFit(dest, true);
         this.current = dest;
 		$(this.$LI_ARR[this.current]).addClass('current');
-        this.setContainerLeft(undefined, true, undefined, function(){
+        this.smoothSetContainerLeft(undefined,undefined, function(){
             self.isMoving = false;
             if(self.$indecatorArr)
                 $(self.indecatorArr[self.current]).addClass('current');
@@ -212,9 +212,17 @@
 		this.$viewpoint.remove();
 		this.$BACKUP.appendTo(this.$parent);
 	}
-
-	Slider.prototype.setContainerLeft = function setContainerLeft(v, isAnimate, durition, cb){
-        this.$slideContainer.animate({left : (v !== undefined ? v : -this.getCurrentLiLeft()) },isAnimate ? (durition ? durition : this.DURATION) : 0, cb);
+	Slider.prototype.smoothSetContainerLeft = function(v, durition, cb) {
+		durition = durition || this.DURATION;
+		this.$slideContainer.animate({transform : 'translateX(' + (v !== undefined ? v : -this.getCurrentLiLeft()) + 'px)' }, durition, cb);
+	};
+	Slider.prototype.setContainerLeft = function setContainerLeft(v){
+		var ___ = this.$slideContainer
+        this.$slideContainer
+        	// .off("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd")
+        	.css({transform : 'translateX(' + (v !== undefined ? v : -this.getCurrentLiLeft()) + 'px)' })
+        // if(typeof cb === 'function')cb()
+        // this.$slideContainer.animate({left : (v !== undefined ? v : -this.getCurrentLiLeft()) },isAnimate ? (durition ? durition : this.DURATION) : 0, cb);
 	};
 
 	Slider.prototype.setViewPointHeightToFit = function setViewPointHeightToFit(n, isAnimate, durition){
@@ -227,7 +235,7 @@
 		return $(this.$LI_ARR[this.current]).position().left - this.width * 1 / this.WIDTH_RATE * ( 1 - this.WIDTH_RATE ) / 2;
 	};
 
-	Slider.prototype.bindTouchEvent = function bindTouchEvent(isLoop){
+	Slider.prototype.bindTouchEvent = function bindTouchEvent(interval, isLoop){
 		if( !('ontouchstart' in window) ){
 			console.warn('touch event is not supported by browser');
 			return;
@@ -244,6 +252,9 @@
 
         // var float = $('<p id="float">').css({'position': 'fixed','width': 20,'height': 20,'left':0,top:0,'z-index':1000000}).appendTo('body');
         this.$slideContainer.on('touchstart',function(e){
+        	if(self.isMoving)
+				return;
+        	self.stop();
      		self.$arrowNext.hide();
      		self.$arrowPrev.hide();
 			if( self.LENGTH == 2 ){
@@ -283,13 +294,15 @@
 			}
 		});
         this.$slideContainer.on('touchend', function(){
+        	if(interval)
+        		self.start(interval, isLoop);
             self.isTouching = false;
 			if( hDiff < -THRESHOLD*self.width ){
                 self.moveForward(isLoop)
 			}else if( hDiff > THRESHOLD*self.width ){
                 self.moveBackward(isLoop)
 			}else
-                self.setContainerLeft(undefined, true);
+                self.smoothSetContainerLeft();
 			hDiff = 0;
 			direction = 'N';
 		});

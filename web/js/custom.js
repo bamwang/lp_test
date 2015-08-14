@@ -36,10 +36,10 @@ $(window).load(function(){
     }else{
         $(window).on('scroll', function(){
             var scrollTop = window.scrollY;
-            if(util.isCompleteShown($ankor) || util.isOverflowUp($ankor))
-                $headerScreenShot.css({"top": lowerBounder});
+            if(util.isCompleteShown($ankor) || util.isOverflowUp($ankor) || util.isShown($ankor))
+                $headerScreenShot.css({"transform": 'translateY(' + lowerBounder + 'px)'});
             else
-                $headerScreenShot.css("top" , upperBounder + scrollTop * (util.isLT768() ? 0.3 : 0.3));
+                $headerScreenShot.css("transform", 'translateY(' + ( upperBounder + scrollTop * (util.isLT768() ? 0.3 : 0.3) ) + 'px)');
             if(util.isShown($headerBg))
                 $headerBg.css("background-position-y", scrollTop * 0.1);
             if(util.isShown($infoSection))
@@ -60,8 +60,8 @@ $(window).load(function(){
                 slider = null;
             }
             $ankor = $infoLeftHeader;
-            upperBounder = 100;
-            lowerBounder = util.getTop($ankor) - 20;
+            upperBounder = 0;
+            lowerBounder = util.getTop($ankor) - 120;
             $infoLeft.css('margin-bottom','');
             $infoSection.css('min-height', $headerScreenShot.height() + 80);
         }
@@ -90,10 +90,10 @@ var util = (function(){
                 return util.getTop($element) > util.getScrollBottom(); 
             },
             isShown : function isShown($element){
-                return !util.isOverflowUp($element) || !util.isOverflowDown($element); 
+                return !util.isOverflowUp($element) && !util.isOverflowDown($element); 
             },
             isCompleteShown : function isCompleteShown($element){
-                return !util.isOverflowUp($element) && !util.isOverflowDown($element); 
+                return util.getTop($element) > util.getScrollTop() && util.getBottom($element) < util.getScrollBottom(); 
             },
             isLT768 : function isLT768(){
                 return $(window).width() <= 768;
