@@ -12,6 +12,10 @@ $(window).load(function(){
     var origTop = parseInt($headerScreenShot.css('top'));
     var $ankor, lowerBounder, upperBounder;// size sensitive
     
+    $("a[href^=#]").on('click', function(e){
+        e.preventDefault();
+        $('body,html').animate({scrollTop:$($(this).attr('href')).offset().top});
+    })
     // var float = $('<p id="float">').css({'position': 'fixed','width': 20,'height': 20,'left':0,top:0,'z-index':1000000}).appendTo('body');
 
     var ua = (new UAParser()).getResult();
@@ -41,7 +45,7 @@ $(window).load(function(){
         $(window).on('resize', updateOffset);
         $(window).on('scroll', function(){
             var scrollTop = window.scrollY;
-            if(util.isCompleteShown($ankor) || util.isOverflowUp($ankor) || util.isShown($ankor))
+            if(!util.isBottomDown($ankor))
                 $headerScreenShot.css({"top": lowerBounder});
                 // $headerScreenShot.css({"transform": 'translateY(' + lowerBounder + 'px)'});
             else
@@ -90,17 +94,23 @@ var util = (function(){
             getScrollBottom : function getScrollBottom(){
                 return $(window).scrollTop() + $(window).height();
             },
-            isOverflowUp : function isOverflowUp($element){
-                return util.getBottom($element) < util.getScrollTop(); 
+            isTopUp : function isTopUp($element){
+                return util.getTop($element) < util.getScrollTop(); 
             },
-            isOverflowDown : function isOverflowDown($element){
-                return util.getTop($element) > util.getScrollBottom(); 
+            isBottomDown : function isBottomDown($element){
+                return util.getBottom($element) > util.getScrollBottom(); 
+            },
+            isTopDown : function isTopDown($element){
+                return util.getTop($element) > util.getScrollBottom();
+            },
+            isBottomUp : function isBottomUp($element){
+                return util.getBottom($element) < util.getScrollTop();
             },
             isShown : function isShown($element){
-                return !util.isOverflowUp($element) && !util.isOverflowDown($element); 
+                return (!(util.isBottomUp($element) || util.isBottomDown($element)) || !(util.isTopUp($element) || util.isTopDown($element))); 
             },
             isCompleteShown : function isCompleteShown($element){
-                return util.getTop($element) > util.getScrollTop() && util.getBottom($element) < util.getScrollBottom(); 
+                return !(util.isBottomUp($element) || util.isBottomDown($element) || util.isTopUp($element) || util.isTopDown($element));
             },
             isLT768 : function isLT768(){
                 return $(window).width() <= 768;
