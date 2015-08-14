@@ -20,8 +20,12 @@ $(window).load(function(){
 
     updateOffset()
 
-    $(window).on('resize', updateOffset);
-    if((ua.browser.name === 'WebKit' || ua.browser.name === 'Chrome') && ua.os.name === 'iOS'){
+    if((
+        ua.browser.name === 'WebKit' 
+        || ua.browser.name === 'Chrome') 
+        && ( ua.os.name === 'iOS' || ua.os.name === 'Android' )
+        && util.isLT768()
+        ){
         var bg = $headerBg.css('background-image');
         $('body').css({
             'background-image': bg,
@@ -34,12 +38,15 @@ $(window).load(function(){
         // $headerScreenShot.parent()
 
     }else{
+        $(window).on('resize', updateOffset);
         $(window).on('scroll', function(){
             var scrollTop = window.scrollY;
             if(util.isCompleteShown($ankor) || util.isOverflowUp($ankor) || util.isShown($ankor))
-                $headerScreenShot.css({"transform": 'translateY(' + lowerBounder + 'px)'});
+                $headerScreenShot.css({"top": lowerBounder});
+                // $headerScreenShot.css({"transform": 'translateY(' + lowerBounder + 'px)'});
             else
-                $headerScreenShot.css("transform", 'translateY(' + ( upperBounder + scrollTop * (util.isLT768() ? 0.3 : 0.3) ) + 'px)');
+                $headerScreenShot.css("top" , upperBounder + scrollTop * (util.isLT768() ? 0.3 : 0.3));
+                // $headerScreenShot.css("transform", 'translateY(' + ( upperBounder + scrollTop * (util.isLT768() ? 0.3 : 0.3) ) + 'px)');
             if(util.isShown($headerBg))
                 $headerBg.css("background-position-y", scrollTop * 0.1);
             if(util.isShown($infoSection))
@@ -60,8 +67,8 @@ $(window).load(function(){
                 slider = null;
             }
             $ankor = $infoLeftHeader;
-            upperBounder = 0;
-            lowerBounder = util.getTop($ankor) - 120;
+            upperBounder = 100;
+            lowerBounder = util.getTop($ankor) - 20;
             $infoLeft.css('margin-bottom','');
             $infoSection.css('min-height', $headerScreenShot.height() + 80);
         }
