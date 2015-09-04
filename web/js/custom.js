@@ -24,10 +24,10 @@ $(window).load(function() {
     // float.text(ua.engine.name + ua.os.name)
     $('#comment_container').bamSlider();
 
-    updateOffset();
     if (navigator.userAgent.toLowerCase().search('micromessenger') > -1) {
         $('.note').text("长按二维码，识别并关注");
     }
+    updateOffset();
 
 
     $(window).on('resize', updateOffset);
