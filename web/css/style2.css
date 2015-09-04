@@ -205,9 +205,18 @@ header .top {
 
     width: 100%;
 }
-header .top h2{
-	text-align: center;
+header .top .title{
+    text-align: center;
 	padding-left: 1em;
+}
+
+header .top .title h2{
+    line-height: 1em;
+    padding-top: 30px;
+}
+header .top .title h4,
+header .top .title h2{
+    margin:0 
 }
 
 header .top > * {
@@ -316,7 +325,7 @@ header .screenshot .container .frame {}
 #features .body li.detail {
     list-style-type: none;
     float: left;
-    width: 31%;
+    width: 33%;
     padding: 0 1%;
     display: block;
 }
@@ -336,7 +345,7 @@ header .screenshot .container .frame {}
 }
 
 #features .header h2 {
-    color: #9c9c9c;
+    color: #333;
 }
 
 
@@ -348,6 +357,7 @@ header .screenshot .container .frame {}
 
 #info .left {
     width: 50%;
+    text-align: center;
 }
 
 #info .left {
@@ -427,7 +437,7 @@ footer .logo{
         text-align: center;
     }
 
-    header .top h2{
+    header .top .title{
 		width: 100%;
         padding-left: 0;
         margin-bottom: 0;
