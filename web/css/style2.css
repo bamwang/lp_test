@@ -1,6 +1,6 @@
 body {
     color: #555;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif, '微软雅黑';
     font-weight: 100;
 }
 
@@ -316,8 +316,8 @@ header .screenshot .container .frame {}
 #features .body li.detail {
     list-style-type: none;
     float: left;
-    width: 30%;
-    margin: 1%;
+    width: 31%;
+    padding: 0 1%;
     display: block;
 }
 
